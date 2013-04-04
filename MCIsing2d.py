@@ -26,6 +26,8 @@ def deltaU(s,i,j,size):
     """
     Compute delta U of flipping a given dipole at i,j
     Note periodic boundary conditions, which is why we need to know the size.
+
+    This function returns deltaU/2
     """
     above = s[(i+1) % size][j]
     below = s[(i-1) % size][j]
@@ -88,6 +90,11 @@ def simulate(size, T, showevery=None, graphics=True):
     numtrials = 100*size**2
     print "numtrials",numtrials
 
+    """b_factor pre-calculates the Boltzmann factors for our 4 possible
+    positive energies. delatU returns an int -4 <= dU <= 4. b_factor is
+    of length 5 to save a subtraction, i.e. we want b_factor[4]. b_factor[0]
+    is never used but is retained for convenience.
+    """
     b_factor = [exp(-2*i/T) for i in xrange(5)]
     rands = random(numtrials)
     for trial in xrange(numtrials):
