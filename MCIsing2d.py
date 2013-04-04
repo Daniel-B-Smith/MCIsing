@@ -83,7 +83,8 @@ def simulate(size, T, showevery=None, graphics=True):
     
     numtrials = 100*size**2
     print "numtrials",numtrials
-        
+
+    b_factor = [exp(-(i+1)/T) for i in xrange(8)]
     for trial in xrange(numtrials):
         i = randint(size) # choose random row
         j = randint(size) # and random column
@@ -91,7 +92,7 @@ def simulate(size, T, showevery=None, graphics=True):
         if ediff <= 0: # flipping reduces the energy
             s[i][j] = -s[i][j]
         else:
-            if random() < exp(-ediff/T):
+            if random() < b_factor[ediff-1]:
                 s[i][j] = -s[i][j]
         if graphics and shouldshow(trial,size,showevery):
             print "Showing iteration",trial
