@@ -34,6 +34,10 @@ def deltaU(s,i,j,size):
 
     return s[i][j]*(above+below+left+right)
 
+def deltaUtest(s,i,j,size):
+    return s[i][j]*(s[(i+1) % size][j] + s[(i-1) % size][j] +
+                    s[i][(j+1) % size] + s[i][(j-1) % size])
+
 def colorsquare(s,fig):
     fig.clear()
     pylab.imshow(s,interpolation='nearest',cmap=cm.Greys_r)
@@ -88,7 +92,7 @@ def simulate(size, T, showevery=None, graphics=True):
     for trial in xrange(numtrials):
         i = randint(size) # choose random row
         j = randint(size) # and random column
-        ediff = deltaU(s,i,j,size)
+        ediff = deltaUtest(s,i,j,size)
         if ediff <= 0: # flipping reduces the energy
             s[i][j] *= -1
         else:
