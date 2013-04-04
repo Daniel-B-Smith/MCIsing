@@ -32,7 +32,7 @@ def deltaU(s,i,j,size):
     right = s[i][(j+1) % size]
     left =  s[i][(j-1) % size]
 
-    return 2*s[i][j]*(above+below+left+right)
+    return s[i][j]*(above+below+left+right)
 
 def colorsquare(s,fig):
     fig.clear()
@@ -84,16 +84,16 @@ def simulate(size, T, showevery=None, graphics=True):
     numtrials = 100*size**2
     print "numtrials",numtrials
 
-    b_factor = [exp(-(i+1)/T) for i in xrange(8)]
+    b_factor = [exp(-2*i/T) for i in xrange(5)]
     for trial in xrange(numtrials):
         i = randint(size) # choose random row
         j = randint(size) # and random column
         ediff = deltaU(s,i,j,size)
         if ediff <= 0: # flipping reduces the energy
-            s[i][j] = -s[i][j]
+            s[i][j] *= -1
         else:
-            if random() < b_factor[ediff-1]:
-                s[i][j] = -s[i][j]
+            if random() < b_factor[ediff]:
+                s[i][j] *= -1
         if graphics and shouldshow(trial,size,showevery):
             print "Showing iteration",trial
             colorsquare(s,fig)
