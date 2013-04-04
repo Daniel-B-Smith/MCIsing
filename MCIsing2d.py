@@ -8,6 +8,7 @@ from numpy import mod, exp
 import scipy
 import matplotlib.cm as cm
 from time import sleep
+import sys
 
 def initialize(size):
     """
@@ -16,27 +17,22 @@ def initialize(size):
     myarray = random([size,size]) # initializes with random numbers from 0 to 1.
     myarray[myarray<0.5] = -1
     myarray[myarray>=0.5] = 1
+    myarray = np.asarray(myarray, dtype=int)
+    myarray = [list(x) for x in myarray]
     return myarray
 
 #@profile
-def deltaU(s,i,j):
+def deltaU(s,i,j,size):
     """
     Compute delta U of flipping a given dipole at i,j
     Note periodic boundary conditions, which is why we need to know the size.
     """
-    size = s.shape[0]
-    try:
-        above = s[i+1,j]
-        below = s[i-1,j]
-        right = s[i,j+1]
-        left =  s[i,j-1]
-    except:
-        above = s[mod(i+1,size),j]
-        below = s[mod(i-1,size),j]
-        right = s[i,mod(j+1,size)]
-        left =  s[i,mod(j-1,size)]
+    above = s[(i+1) % size][j]
+    below = s[(i-1) % size][j]
+    right = s[i][(j+1) % size]
+    left =  s[i][(j-1) % size]
 
-    return 2*s[i,j]*(above+below+left+right)
+    return 2*s[i][j]*(above+below+left+right)
 
 def colorsquare(s,fig):
     fig.clear()
@@ -85,19 +81,18 @@ def simulate(size, T, showevery=None, graphics=True):
         colorsquare(s,fig)
         pylab.show()
     
-
     numtrials = 100*size**2
     print "numtrials",numtrials
         
     for trial in xrange(numtrials):
         i = randint(size) # choose random row
         j = randint(size) # and random column
-        ediff = deltaU(s,i,j)
+        ediff = deltaU(s,i,j,size)
         if ediff <= 0: # flipping reduces the energy
-            s[i,j] = -s[i,j]
+            s[i][j] = -s[i][j]
         else:
             if random() < exp(-ediff/T):
-                s[i,j] = -s[i,j]
+                s[i][j] = -s[i][j]
         if graphics and shouldshow(trial,size,showevery):
             print "Showing iteration",trial
             colorsquare(s,fig)
@@ -106,4 +101,8 @@ def simulate(size, T, showevery=None, graphics=True):
     print "That took",stop-start,"seconds, or",numtrials/(stop-start),"trials per second"
     
 if __name__ == '__main__':
-    raw_input()  # you need this.
+    #raw_input()  # you need this.
+    if len(sys.argv) == 1:
+        simulate(50, 1, graphics=False)
+    else:
+        simulate(int(sys.argv[1]), 1, graphics=False)
