@@ -14,11 +14,7 @@ def initialize(size):
     """
     Initialize a random array where our spins are all up or down.
     """
-    myarray = random([size,size]) # initializes with random numbers from 0 to 1.
-    myarray[myarray<0.5] = -1
-    myarray[myarray>=0.5] = 1
-    myarray = np.asarray(myarray, dtype=int).tolist()
-    return myarray
+    return np.random.choice([-1, 1], size=(size, size)).tolist()
 
 #@profile
 def deltaU(s,i,j,size):
