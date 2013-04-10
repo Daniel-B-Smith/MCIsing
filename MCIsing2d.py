@@ -17,8 +17,7 @@ def initialize(size):
     myarray = random([size,size]) # initializes with random numbers from 0 to 1.
     myarray[myarray<0.5] = -1
     myarray[myarray>=0.5] = 1
-    myarray = np.asarray(myarray, dtype=int)
-    myarray = [list(x) for x in myarray]
+    myarray = np.asarray(myarray, dtype=int).tolist()
     return myarray
 
 #@profile
@@ -63,7 +62,7 @@ def shouldshow(iteration,size,showevery):
             showevery = size*size
         return divmod(iteration,showevery)[1] == 0
 
-#@profile
+@profile
 def simulate(size, T, showevery=None, graphics=True):
     """
     
